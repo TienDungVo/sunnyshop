@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunny.</title>
+    <link rel="icon" type="image/png" href="/images/side-table.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f3f5;
+        }
+
+        .sidebar {
+
+            background-color: rgb(255, 255, 255);
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .sidebar .active {
+            background-color: #e4e4e5;
+            color: rgb(0, 0, 0);
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-container .form-group {
+            margin-bottom: 15px;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            border-radius: 20px;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: 30px;
+            opacity: 0;
+            /* Ẩn input thực sự */
+            cursor: pointer;
+        }
+
+        .custom-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 140px;
+            height: 30px;
+            /* Màu nền */
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            /* Canh giữa chữ theo chiều dọc */
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-button i {
+            margin-right: 10px;
+            /* Khoảng cách giữa icon và chữ */
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            width: 300px; /* Đặt kích thước cố định cho container */
+            height: 300px; /* Đặt kích thước cố định cho container */
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Bảo đảm hình ảnh phù hợp với container và duy trì tỉ lệ */
+            border-radius: 20px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .category-heading {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Start Header/Navigation -->
+<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/sunny/home}">Sunny<span>.</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+                aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/login}"><img src="/images/user.svg" alt="User"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="vh-60">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2 sidebar">
+                <a th:href="@{/admin/index}" class="active"><i class="fas fa-box fa-fw me-3"></i>Sản phẩm</a>
+                <a th:href="@{/admin/table}"><i class="fas fa-list fa-fw me-3"></i>Danh sách</a>
+                <hr>
+                <a th:href="@{/admin/category}"><i class="fas fa-tags fa-fw me-3"></i>Danh Mục</a>
+                <a href="#library"><i class="fas fa-store fa-fw me-3"></i>Nhãn Hàng</a>
+                <hr>
+                <a th:href="@{/admin/load}"><i class="fas fa-clock fa-fw me-3"></i>Tổng quan</a>
+                <a th:href="@{/admin/today}"><i class="fas fa-credit-card fa-fw me-3"></i>Thanh toán</a>
+                <hr>
+                <a th:href="@{/admin/send}"><i class="fas fa-bullhorn fa-fw me-3"></i>Thông báo</a>
+
+            </div>
+
+            <div class="col-sm-10 mt-2">
+                <div class="untree_co-section" style="background-color: #fff;">
+                    <div class="container">
+
+                        <div class="block">
+                            <div class="row justify-content-center">
+                                <div class="col-sm-6">
+                                    <img src="/images/4141232.jpg" style="width: 92%">
+
+                                </div>
+                                <div class="col-sm-6 pb-4">
+                                    <form action="/mail/send" method="post">
+
+                                        <div class="form-group mt-3">
+                                            <label for="selectedEmail">Chọn từ danh sách email:</label>
+                                            <select class="form-control" id="selectedEmail" name="selectedEmail" onchange="updateHiddenInput()">
+                                                <option value="">-- Chọn email --</option>
+                                                <option th:each="email : ${mails}" th:value="${email}" th:text="${email}"></option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" id="to" name="to">
+                                        <div class="row">
+
+                                            <div class="form-group">
+                                                <label class="text-black" for="fname">Nội Dung</label>
+                                                <input type="text" class="form-control" id="fname" name="subject">
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="form-group mb-5">
+                                            <label class="text-black" for="message">Thông báo</label>
+                                            <textarea name="body" class="form-control" id="message" cols="30" rows="5"></textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success">Gửi phản hồi</button>
+                                    </form>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Start Footer Section -->
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        const message = /*[[${message}]]*/ null;
+        const text = /*[[${text}]]*/ null;
+
+        if (message === "success" && text !== null) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else if (message === "error" && text !== null) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+    /*]]>*/
+</script>
+<script>
+    function updateHiddenInput() {
+        var selectedEmail = document.getElementById("selectedEmail").value;
+        document.getElementById("to").value = selectedEmail;
+    }
+
+    function submitForm() {
+        // Call updateHiddenInput to make sure the hidden input is updated before submitting
+        updateHiddenInput();
+
+        // Optionally, you can perform additional validation or submit the form directly here
+        document.getElementById("emailForm").submit();
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

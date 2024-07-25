@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunny.</title>
+    <link rel="icon" type="image/png" href="/images/side-table.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        select.custom-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        /* Hiệu ứng hover */
+        select.custom-select:hover {
+            border-color: #007bff; /* Màu sắc biên khi hover */
+        }
+
+        /* Tùy chỉnh phần chọn khi được focus */
+        select.custom-select:focus {
+            outline: none;
+            border-color: #007bff; /* Màu sắc biên khi focus */
+        }
+        .btn{
+            border-radius: 20px;
+            height: 50px;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info-item label {
+            font-weight: bold;
+            width: 150px;
+        }
+
+        .user-info-item span {
+            flex: 1;
+            padding-left: 10px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<!-- Start Header/Navigation -->
+<div th:replace="~{header :: navbar}"></div>
+<!-- End Header/Navigation -->
+
+<section class="vh-60">
+    <div class="container mt-5">
+        <div class="row" style="margin-top: 20px; background-color: #fff; border-radius: 20px; padding: 20px;">
+            <form>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                    <tr>
+                        <td style="width: 30px; "></td>
+                        <td style="width: 130px;">Hình ảnh</td>
+                        <td>Tên sản phẩm</td>
+
+                        <td>Đơn giá</td>
+                        <td>Số lượng</td>
+                        <td>Tổng tiền</td>
+                        <td>Xóa</td>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <tr th:each="cart : ${carts}">
+                        <td style="width: 30px;">
+                            <input type="checkbox">
+                        </td>
+                        <td style="width: 130px;">
+                            <img th:src="@{/images/{image}(image=${cart.product.image})}" alt="" style="width: 100%; border-radius: 17%; margin-top: 20px;">
+                        </td>
+                        <td>
+                            <p th:text="${cart.product.productName}"></p>
+
+                            <p th:text="${#strings.length(cart.product.description) > 60 ? #strings.substring(cart.product.description, 0, 60) + '...' : cart.product.description}"></p>
+
+
+                        </td>
+                        <td th:text="${cart.product.unitPrice}"></td>
+                        <td>
+                            <input type="number" min="1" max="99" th:value="${cart.quantity}">
+                        </td>
+                        <td th:text="${cart.product.unitPrice * cart.quantity}"></td>
+                        <td style="text-align: right;">
+                            <form action="/cart/remove" method="post" >
+                                <input type="hidden" name="productId" th:value="${cart.product.productID}">
+                                <button type="submit" class="btn btn-success">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <!-- hahahah -->
+        <div class="row mt-5 mb-5 p-5">
+            <div class="col-md-6">
+                <div class="row mb-5">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <button class="btn btn-dark">Cập nhật giỏ hàng</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-dark border">Tiếp tục mua sắm</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="text-black h4" for="coupon">Mã giảm giá</label>
+                        <p>Nhập mã giảm giá bạn muốn</p>
+                    </div>
+                    <div class="col-md-8 mb-3 mb-md-0">
+                        <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-dark">Áp Dụng</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-5">
+                <div class="row justify-content-end">
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-12 text-right border-bottom mb-5">
+                                <h3 class="text-black h4 text-uppercase">Sản phẩm đã chọn</h3>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <span class="text-black">Subtotal</span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class="text-black" th:text="${totalPrice}"></strong>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form action="/order/create" method="post">
+                                    <button type="submit" class="btn btn-primary">Mua ngay</button>
+                                </form>
+                            </div>
+                        </div>
+<!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+<!--                            Kiêm tra-->
+<!--                        </button>-->
+<!--                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--                            <div class="modal-dialog">-->
+<!--                                <div class="modal-content">-->
+<!--                                    <div class="modal-header">-->
+<!--                                        <h5 class="modal-title" id="exampleModalLabel">Thông tin khách hàng</h5>-->
+<!--                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                                    </div>-->
+<!--                                    <div class="modal-body">-->
+<!--                                        <div class="modal-body">-->
+<!--                                            <div class="user-info">-->
+<!--                                                <div class="user-info-item">-->
+<!--                                                    <label>Full Name:</label>-->
+<!--                                                    <span th:text="${demo.fullName}"></span>-->
+<!--                                                </div>-->
+<!--                                                <div class="user-info-item">-->
+<!--                                                    <label>Email:</label>-->
+<!--                                                    <span th:text="${demo.email}"></span>-->
+<!--                                                </div>-->
+<!--                                                <div class="user-info-item">-->
+<!--                                                    <label>Phone Number:</label>-->
+<!--                                                    <span th:text="${demo.phoneNumber}"></span>-->
+<!--                                                </div>-->
+<!--                                                <div class="user-info-item">-->
+<!--                                                    <label>Address:</label>-->
+<!--                                                    <span th:text="${demo.address}"></span>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="modal-footer">-->
+<!--                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>-->
+<!--                                       -->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</section>
+
+
+
+<!-- End Footer Section -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const message = /*[[${message}]]*/ null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (message !== null) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+    /*]]>*/
+</script>
+<!-- End Product Section -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

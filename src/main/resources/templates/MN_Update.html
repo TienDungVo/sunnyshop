@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunny.</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="icon" type="image/png" href="/images/side-table.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f3f5;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background-color: rgb(255, 255, 255);
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .sidebar .active {
+            background-color: #e4e4e5;
+            color: rgb(0, 0, 0);
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-container .form-group {
+            margin-bottom: 15px;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            border-radius: 20px;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: 30px;
+            opacity: 0;
+            /* Ẩn input thực sự */
+            cursor: pointer;
+        }
+
+        .custom-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 140px;
+            height: 30px;
+            /* Màu nền */
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            /* Canh giữa chữ theo chiều dọc */
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-button i {
+            margin-right: 10px;
+            /* Khoảng cách giữa icon và chữ */
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            width: 300px; /* Đặt kích thước cố định cho container */
+            height: 300px; /* Đặt kích thước cố định cho container */
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Bảo đảm hình ảnh phù hợp với container và duy trì tỉ lệ */
+            border-radius: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Start Header/Navigation -->
+<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/sunny/home}">Sunny<span>.</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+                aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/login}"><img src="/images/user.svg" alt="User"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="vh-60">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2 sidebar">
+                <a th:href="@{/admin/index}" class="active"><i class="fas fa-box fa-fw me-3"></i>Sản phẩm</a>
+                <a th:href="@{/admin/table}"><i class="fas fa-list fa-fw me-3"></i>Danh sách</a>
+                <hr>
+                <a th:href="@{/admin/category}"><i class="fas fa-tags fa-fw me-3"></i>Danh Mục</a>
+                <a href="#library"><i class="fas fa-store fa-fw me-3"></i>Nhãn Hàng</a>
+                <hr>
+                <a th:href="@{/admin/load}"><i class="fas fa-clock fa-fw me-3"></i>Tổng quan</a>
+                <a th:href="@{/admin/today}"><i class="fas fa-credit-card fa-fw me-3"></i>Thanh toán</a>
+                <hr>
+                <a th:href="@{/admin/send}"><i class="fas fa-bullhorn fa-fw me-3"></i>Thông báo</a>
+
+            </div>
+            <div class="col-sm-10 mt-5">
+                <!--                enctype="multipart/form-data"-->
+                <form th:action="@{/update/product}" method="post" enctype="multipart/form-data" th:object="${product}">
+                    <input type="hidden" name="productId" th:value="${product.productID}">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img th:src="@{/images/{image}(image=${product.image})}" style="width: 90%">
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label for="productName" class="form-label">Tên sản phẩm</label>
+                                <input type="text" class="form-control" id="productName" th:field="*{productName}" required>
+                            </div>
+                            <!-- Thêm các trường input khác -->
+                            <div class="form-group">
+                                <label for="supplierId" class="form-label">Nhãn hàng</label>
+                                <select id="supplierId" class="form-select" name="supplierId" required>
+                                    <option value="" disabled>Nhãn hàng</option>
+                                    <option th:each="supplier : ${suppliers}" th:value="${supplier.supplierID}" th:text="${supplier.supplierName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryId" class="form-label">Danh mục</label>
+                                <select id="categoryId" class="form-select" name="categoryId" required>
+                                    <option value="" disabled>Danh mục</option>
+                                    <option th:each="category : ${categories}" th:value="${category.categoryID}" th:text="${category.categoryName}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="unitPrice" class="form-label">Giá</label>
+                                <input type="text" class="form-control" id="unitPrice" th:field="*{unitPrice}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitsInStock" class="form-label">Số lượng</label>
+                                <input type="text" class="form-control" id="unitsInStock" th:field="*{unitsInStock}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitsOnOrder" class="form-label">Số lượng đã đặt hàng</label>
+                                <input type="text" class="form-control" id="unitsOnOrder" th:field="*{unitsOnOrder}">
+                            </div>
+                            <div class="form-group">
+                                <label for="discontinued" class="form-label">Ngừng kinh doanh</label>
+                                <input type="checkbox" class="form-check-input" id="discontinued" name="discontinued" th:checked="${product.discontinued}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description" class="form-label">Mô tả</label>
+                                <textarea class="form-control" id="description" rows="3" th:field="*{description}"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Start Footer Section -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const message = /*[[${message}]]*/ null;
+    const text = /*[[${text}]]*/ null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (message === "success" && text !== null) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else if (message === "error" && text !== null) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+    /*]]>*/
+</script>
+<!-- End Product Section -->
+<script>
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('displayImage').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
